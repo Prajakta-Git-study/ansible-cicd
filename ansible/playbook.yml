@@ -8,7 +8,7 @@
         state: present
         update_cache: yes
 
-    - name: Make sure nginx is started
+    - name: Start and enable nginx
       service:
         name: nginx
         state: started
