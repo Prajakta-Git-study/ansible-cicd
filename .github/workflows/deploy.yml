@@ -1,0 +1,33 @@
+name: Deploy with ansible
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up python and ansible
+        run: |
+          sudo apt update                      # Install python3-pip
+          sudo apt install -y python3-pip      # Install ansible
+          pip3 install ansible                 # Verify ansible installation
+        
+      - name: Add SSH keys and set permissions
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ANSIBLE_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
+      - name: Replace Placeholder in Inventory file
+        run: |
+          sed -i "s/{{ host_placeholder }}$/{ secrets.HOST }" /ansible/inventory.yml
+          sed -i "s/{{ user_placeholder }}$/{ secrets.Remote_user }" /ansible/inventory.yml
+
+      - name: Run ansible playbook
+        run: |
+          ansible-playbook ansible/playbook.yml ansible/inventory.yml
