@@ -1,15 +1,32 @@
-- name: Test connection with instance and install Nginx
+# - name: Test connection with instance and install Nginx
+#   hosts: all
+#   become: true
+#   tasks:
+#     - name: Make sure nginx is installed
+#       apt:
+#         name: nginx
+#         state: present
+#         update_cache: yes
+
+#     - name: Start and enable nginx
+#       service:
+#         name: nginx
+#         state: started
+#         update_cache: yes
+
+---
+- name: Test Connection with instance and install NgInx
   hosts: all
   become: true
   tasks:
-    - name: Make sure nginx is installed
-      apt:
+    - name: Ensure Nginx is installed
+      apt: 
         name: nginx
         state: present
         update_cache: yes
 
-    - name: Start and enable nginx
+    - name: Start and Enable Nginx
       service:
         name: nginx
         state: started
-        update_cache: yes
+        enabled: yes
